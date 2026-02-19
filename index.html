@@ -1,0 +1,1484 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>نظام الاختبارات - صفحة الطالب</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            position: relative;
+            padding-bottom: 60px;
+        }
+
+        /* Login Page */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 30px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header i {
+            font-size: 60px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+
+        .login-header h1 {
+            color: #764ba2;
+            font-size: 1.8rem;
+        }
+
+        .login-header p {
+            color: #666;
+            margin-top: 10px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .remember-me input {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .remember-me label {
+            color: #555;
+            cursor: pointer;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Main App */
+        .app-container {
+            display: none;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            position: fixed;
+            right: -280px;
+            top: 0;
+            width: 280px;
+            height: 100%;
+            background: white;
+            box-shadow: -5px 0 30px rgba(0,0,0,0.1);
+            transition: 0.3s;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .sidebar.active {
+            right: 0;
+        }
+
+        .sidebar-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .sidebar-header i {
+            font-size: 50px;
+            margin-bottom: 10px;
+        }
+
+        .sidebar-menu {
+            padding: 20px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            border-radius: 15px;
+            color: #555;
+            transition: all 0.3s;
+            cursor: pointer;
+            margin-bottom: 5px;
+        }
+
+        .menu-item:hover,
+        .menu-item.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .menu-item i {
+            width: 25px;
+        }
+
+        .main-content {
+            margin-right: 0;
+            padding: 20px;
+            transition: 0.3s;
+        }
+
+        .main-content.shifted {
+            margin-right: 280px;
+        }
+
+        .top-bar {
+            background: white;
+            border-radius: 20px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #764ba2;
+            cursor: pointer;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            animation: fadeIn 0.5s;
+        }
+
+        .student-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .student-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 50%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .student-name {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .student-grade {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            color: white;
+            font-size: 20px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #764ba2;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #666;
+        }
+
+        .exam-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .exam-card:hover {
+            border-color: #667eea;
+            transform: translateX(-5px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .exam-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .exam-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #764ba2;
+        }
+
+        .exam-badge {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+        }
+
+        .exam-info {
+            display: flex;
+            gap: 20px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .start-exam-btn {
+            background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .start-exam-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 210, 255, 0.3);
+        }
+
+        .exam-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 2000;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .exam-container.active {
+            display: block;
+        }
+
+        .exam-header-bar {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .timer {
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            margin: 20px;
+        }
+
+        .timer.warning {
+            color: #ff4757;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .question-box {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #764ba2;
+            margin-bottom: 20px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .option-btn {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .option-btn:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .option-btn.selected {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: transparent;
+        }
+
+        .result-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+        }
+
+        .result-content {
+            background: white;
+            border-radius: 30px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 20px auto;
+            color: white;
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: 700;
+        }
+
+        .wrong-answer-item {
+            background: #fff5f5;
+            border-right: 4px solid #ff4757;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #00d25b;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            box-shadow: 0 5px 20px rgba(0,210,91,0.3);
+            z-index: 9999;
+            animation: slideDown 0.3s ease;
+        }
+
+        .toast.error {
+            background: #ff4757;
+        }
+
+        @keyframes slideDown {
+            from { top: -100px; opacity: 0; }
+            to { top: 20px; opacity: 1; }
+        }
+
+        /* Footer */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+            z-index: 900;
+            font-size: 0.95rem;
+        }
+
+        .footer i {
+            color: #ff4757;
+            animation: heartbeat 1.5s ease infinite;
+        }
+
+        .footer .instructor-name {
+            color: #764ba2;
+            font-weight: 700;
+            margin: 0 5px;
+        }
+
+        .footer .platform-name {
+            color: #667eea;
+            font-weight: 700;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 4000;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #764ba2;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-text {
+            color: #764ba2;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .main-content.shifted {
+                margin-right: 0;
+            }
+            
+            .sidebar.active {
+                width: 100%;
+            }
+            
+            .footer {
+                font-size: 0.8rem;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">جاري تحميل البيانات...</div>
+    </div>
+
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <i class="fas fa-graduation-cap"></i>
+                <h1>نظام الاختبارات</h1>
+                <p>تسجيل الدخول للطلاب</p>
+            </div>
+            <div class="input-group">
+                <label><i class="fas fa-user"></i> اسم المستخدم</label>
+                <input type="text" id="username" placeholder="أدخل اسم المستخدم">
+            </div>
+            <div class="input-group">
+                <label><i class="fas fa-lock"></i> كلمة المرور</label>
+                <input type="password" id="password" placeholder="أدخل كلمة المرور">
+            </div>
+            <div class="remember-me">
+                <input type="checkbox" id="rememberMe" checked>
+                <label for="rememberMe">تذكرني</label>
+            </div>
+            <button class="login-btn" onclick="login()">
+                <i class="fas fa-sign-in-alt"></i> دخول
+            </button>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="mainApp" class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-user-graduate"></i>
+                <h2 id="sidebarStudentName">الطالب</h2>
+                <p id="sidebarStudentGrade">المرحلة</p>
+            </div>
+            <div class="sidebar-menu">
+                <div class="menu-item active" onclick="showSection('home')">
+                    <i class="fas fa-home"></i>
+                    <span>الرئيسية</span>
+                </div>
+                <div class="menu-item" onclick="showSection('new-exams')">
+                    <i class="fas fa-pencil-alt"></i>
+                    <span>اختبارات جديدة</span>
+                </div>
+                <div class="menu-item" onclick="showSection('results')">
+                    <i class="fas fa-chart-line"></i>
+                    <span>نتائجي</span>
+                </div>
+                <div class="menu-item" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>تسجيل خروج</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content" id="mainContent">
+            <div class="top-bar">
+                <button class="menu-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="user-info">
+                    <span id="headerStudentName">طالب</span>
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Home Section -->
+            <div id="home-section" class="section active">
+                <div class="student-header" id="studentHeader">
+                    <div class="student-name" id="displayStudentName"></div>
+                    <div class="student-grade" id="displayStudentGrade"></div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-pencil-alt"></i></div>
+                        <div class="stat-value" id="totalExams">0</div>
+                        <div class="stat-label">إجمالي الاختبارات</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                        <div class="stat-value" id="completedExams">0</div>
+                        <div class="stat-label">الاختبارات المكتملة</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-star"></i></div>
+                        <div class="stat-value" id="averageScore">0%</div>
+                        <div class="stat-label">المعدل العام</div>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <h3 style="color: #764ba2; margin-bottom: 20px;"><i class="fas fa-history"></i> آخر الاختبارات</h3>
+                    <div id="recentExams"></div>
+                </div>
+            </div>
+
+            <!-- New Exams Section -->
+            <div id="new-exams-section" class="section">
+                <div class="content-card">
+                    <h3 style="color: #764ba2; margin-bottom: 20px;"><i class="fas fa-pencil-alt"></i> الاختبارات الجديدة</h3>
+                    <div id="newExamsList"></div>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div id="results-section" class="section">
+                <div class="content-card">
+                    <h3 style="color: #764ba2; margin-bottom: 20px;"><i class="fas fa-chart-line"></i> نتائج الاختبارات</h3>
+                    <div id="allResultsList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Exam Container -->
+    <div id="examContainer" class="exam-container">
+        <div class="exam-header-bar">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h2 id="currentExamTitle"></h2>
+                <button onclick="exitExam()" style="background: none; border: none; color: white; font-size: 24px;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="timer" id="timer">60</div>
+        
+        <div id="questionsArea"></div>
+        
+        <div style="padding: 20px; text-align: center;">
+            <button class="login-btn" onclick="submitExam()" style="width: auto; padding: 15px 50px;">
+                <i class="fas fa-check-circle"></i> إنهاء الاختبار
+            </button>
+        </div>
+    </div>
+
+    <!-- Result Modal -->
+    <div id="resultModal" class="result-modal" style="display: none;">
+        <div class="result-content">
+            <h2 style="color: #764ba2; text-align: center;">نتيجة الاختبار</h2>
+            <div class="score-circle">
+                <span class="score-number" id="resultScore">0</span>
+                <span>من</span>
+                <span id="resultTotal">0</span>
+            </div>
+            <div style="text-align: center; margin: 20px 0;">
+                <p id="resultPercentage">0%</p>
+            </div>
+            <h3 style="color: #764ba2; margin: 20px 0;">الإجابات الخاطئة:</h3>
+            <div id="wrongAnswersList"></div>
+            <button class="login-btn" onclick="closeResultModal()" style="margin-top: 20px;">
+                <i class="fas fa-check"></i> حسناً
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer with rights -->
+    <div class="footer">
+        <i class="fas fa-heart"></i>
+        تم انشاء هذه المنصة من قبل التدريسي 
+        <span class="instructor-name">مجتبى كريم عبد الحسن</span>
+        <span class="platform-name">| منصة تعليمية متكاملة</span>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+        import { getDatabase, ref, set, push, onValue, update, remove, get, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyCHTO1RQst9ts_4SR_Bd4Akb-4VljtNIOs",
+            authDomain: "lunex-jewe.firebaseapp.com",
+            databaseURL: "https://lunex-jewe-default-rtdb.firebaseio.com",
+            projectId: "lunex-jewe",
+            storageBucket: "lunex-jewe.firebasestorage.app",
+            messagingSenderId: "79262821764",
+            appId: "1:79262821764:web:b09e602a1f04349df0c1d1",
+            measurementId: "G-9LX3CTJ3X1"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Global variables
+        let currentStudent = null;
+        let currentExam = null;
+        let currentQuestionIndex = 0;
+        let answers = [];
+        let timerInterval = null;
+        let timeLeft = 60;
+
+        // Toast notification
+        function showToast(message, isError = false) {
+            const toast = document.createElement('div');
+            toast.className = 'toast' + (isError ? ' error' : '');
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // Show loading overlay
+        function showLoading(show = true) {
+            document.getElementById('loadingOverlay').classList.toggle('active', show);
+        }
+
+        // Check for saved session on page load
+        window.checkSavedSession = function() {
+            const savedStudent = localStorage.getItem('currentStudent');
+            const rememberMe = localStorage.getItem('rememberMe') === 'true';
+            
+            if (savedStudent && rememberMe) {
+                try {
+                    currentStudent = JSON.parse(savedStudent);
+                    showLoading(true);
+                    
+                    // Verify student still exists in database
+                    const studentRef = ref(db, 'students/' + currentStudent.id);
+                    get(studentRef).then((snapshot) => {
+                        if (snapshot.exists()) {
+                            // Student still exists, login automatically
+                            document.getElementById('loginPage').style.display = 'none';
+                            document.getElementById('mainApp').style.display = 'block';
+                            
+                            // Update UI with student info
+                            document.getElementById('sidebarStudentName').textContent = currentStudent.name;
+                            document.getElementById('sidebarStudentGrade').textContent = currentStudent.grade;
+                            document.getElementById('headerStudentName').textContent = currentStudent.name.split(' ')[0];
+                            document.getElementById('displayStudentName').textContent = currentStudent.name;
+                            document.getElementById('displayStudentGrade').innerHTML = `<i class="fas fa-layer-group"></i> ${currentStudent.grade}`;
+                            
+                            loadStudentData();
+                            showToast(`مرحباً بعودتك ${currentStudent.name}`);
+                        } else {
+                            // Student no longer exists, clear session
+                            localStorage.removeItem('currentStudent');
+                            localStorage.removeItem('rememberMe');
+                        }
+                        showLoading(false);
+                    }).catch(() => {
+                        showLoading(false);
+                    });
+                } catch (e) {
+                    console.error('Error parsing saved student:', e);
+                    localStorage.removeItem('currentStudent');
+                    showLoading(false);
+                }
+            }
+        }
+
+        // Login function
+        window.login = function() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const rememberMe = document.getElementById('rememberMe').checked;
+
+            if (!username || !password) {
+                showToast('الرجاء إدخال اسم المستخدم وكلمة المرور', true);
+                return;
+            }
+
+            showLoading(true);
+
+            // Get all students and filter manually
+            const studentsRef = ref(db, 'students');
+            get(studentsRef).then((snapshot) => {
+                const students = snapshot.val();
+                let foundStudent = null;
+                
+                if (students) {
+                    // Manual search through all students
+                    Object.keys(students).forEach(key => {
+                        const student = students[key];
+                        if (student.username === username && student.password === password) {
+                            foundStudent = {
+                                id: key,
+                                ...student
+                            };
+                        }
+                    });
+                }
+                
+                showLoading(false);
+                
+                if (foundStudent) {
+                    currentStudent = foundStudent;
+                    
+                    // Save session if remember me is checked
+                    if (rememberMe) {
+                        localStorage.setItem('currentStudent', JSON.stringify(currentStudent));
+                        localStorage.setItem('rememberMe', 'true');
+                    } else {
+                        // Clear any existing session
+                        localStorage.removeItem('currentStudent');
+                        localStorage.removeItem('rememberMe');
+                    }
+                    
+                    document.getElementById('loginPage').style.display = 'none';
+                    document.getElementById('mainApp').style.display = 'block';
+                    
+                    // Update UI with student info
+                    document.getElementById('sidebarStudentName').textContent = currentStudent.name;
+                    document.getElementById('sidebarStudentGrade').textContent = currentStudent.grade;
+                    document.getElementById('headerStudentName').textContent = currentStudent.name.split(' ')[0];
+                    document.getElementById('displayStudentName').textContent = currentStudent.name;
+                    document.getElementById('displayStudentGrade').innerHTML = `<i class="fas fa-layer-group"></i> ${currentStudent.grade}`;
+                    
+                    loadStudentData();
+                    showToast(`مرحباً ${currentStudent.name}`);
+                } else {
+                    showToast('اسم المستخدم أو كلمة المرور غير صحيحة', true);
+                }
+            }).catch((error) => {
+                console.error('Login error:', error);
+                showLoading(false);
+                showToast('حدث خطأ في تسجيل الدخول', true);
+            });
+        }
+
+        // Load student data
+        function loadStudentData() {
+            if (!currentStudent) return;
+            
+            // Load results
+            const resultsRef = ref(db, 'results');
+            const resultsQuery = query(resultsRef, orderByChild('studentId'), equalTo(currentStudent.id));
+            
+            onValue(resultsQuery, (snapshot) => {
+                const results = snapshot.val();
+                let totalScore = 0;
+                let totalQuestions = 0;
+                let completedCount = 0;
+                
+                if (results) {
+                    Object.keys(results).forEach(key => {
+                        const result = results[key];
+                        totalScore += result.score;
+                        totalQuestions += result.total;
+                        completedCount++;
+                    });
+                }
+                
+                // Update stats
+                document.getElementById('totalExams').textContent = completedCount;
+                document.getElementById('completedExams').textContent = completedCount;
+                const average = totalQuestions > 0 ? Math.round((totalScore / totalQuestions) * 100) : 0;
+                document.getElementById('averageScore').textContent = average + '%';
+                
+                loadRecentExams(results);
+                loadAllResults(results);
+            });
+            
+            loadNewExams();
+        }
+
+        // Load recent exams
+        function loadRecentExams(results) {
+            const recentExamsDiv = document.getElementById('recentExams');
+            recentExamsDiv.innerHTML = '';
+            
+            if (!results) {
+                recentExamsDiv.innerHTML = '<p style="color: #666; text-align: center;">لا توجد اختبارات سابقة</p>';
+                return;
+            }
+            
+            const resultsArray = Object.keys(results).map(key => ({ id: key, ...results[key] }));
+            resultsArray.sort((a, b) => new Date(b.completedAt) - new Date(a.completedAt));
+            resultsArray.slice(0, 5).forEach(result => {
+                get(ref(db, 'exams/' + result.examId)).then((examSnap) => {
+                    const exam = examSnap.val();
+                    const percentage = Math.round((result.score / result.total) * 100);
+                    
+                    const examCard = document.createElement('div');
+                    examCard.className = 'exam-card';
+                    examCard.innerHTML = `
+                        <div class="exam-header">
+                            <span class="exam-title">${exam ? exam.title : 'اختبار'}</span>
+                            <span class="exam-badge">${percentage}%</span>
+                        </div>
+                        <div class="exam-info">
+                            <span><i class="fas fa-check-circle" style="color: #00d25b;"></i> ${result.score}/${result.total}</span>
+                            <span><i class="far fa-clock"></i> ${new Date(result.completedAt).toLocaleDateString('ar-EG')}</span>
+                        </div>
+                    `;
+                    recentExamsDiv.appendChild(examCard);
+                });
+            });
+        }
+
+        // Load new exams
+        window.loadNewExams = function() {
+            if (!currentStudent) return;
+            
+            const examsRef = ref(db, 'exams');
+            get(examsRef).then((snapshot) => {
+                const exams = snapshot.val();
+                const newExamsList = document.getElementById('newExamsList');
+                newExamsList.innerHTML = '';
+                
+                if (!exams) {
+                    newExamsList.innerHTML = '<p style="color: #666; text-align: center;">لا توجد اختبارات جديدة</p>';
+                    return;
+                }
+                
+                // Filter exams manually by grade
+                const filteredExams = {};
+                Object.keys(exams).forEach(key => {
+                    if (exams[key].grade === currentStudent.grade) {
+                        filteredExams[key] = exams[key];
+                    }
+                });
+                
+                // Check completed exams
+                const resultsRef = ref(db, 'results');
+                const resultsQuery = query(resultsRef, orderByChild('studentId'), equalTo(currentStudent.id));
+                
+                get(resultsQuery).then((resultsSnap) => {
+                    const completedExams = resultsSnap.val();
+                    const completedExamIds = completedExams ? Object.values(completedExams).map(r => r.examId) : [];
+                    
+                    let hasNewExams = false;
+                    
+                    Object.keys(filteredExams).forEach(key => {
+                        const exam = filteredExams[key];
+                        if (!completedExamIds.includes(key)) {
+                            hasNewExams = true;
+                            const examCard = document.createElement('div');
+                            examCard.className = 'exam-card';
+                            examCard.innerHTML = `
+                                <div class="exam-header">
+                                    <span class="exam-title">${exam.title}</span>
+                                    <span class="exam-badge"><i class="far fa-clock"></i> ${exam.questions.length} أسئلة</span>
+                                </div>
+                                <div class="exam-info">
+                                    <span><i class="fas fa-question-circle"></i> ${exam.questions.length} سؤال</span>
+                                    <span><i class="far fa-clock"></i> 60 ثانية لكل سؤال</span>
+                                </div>
+                                <button class="start-exam-btn" onclick="startExam('${key}')">
+                                    <i class="fas fa-play"></i> بدء الاختبار
+                                </button>
+                            `;
+                            newExamsList.appendChild(examCard);
+                        }
+                    });
+                    
+                    if (!hasNewExams) {
+                        newExamsList.innerHTML = '<p style="color: #666; text-align: center;">لا توجد اختبارات جديدة</p>';
+                    }
+                });
+            });
+        }
+
+        // Load all results
+        function loadAllResults(results) {
+            const allResultsList = document.getElementById('allResultsList');
+            allResultsList.innerHTML = '';
+            
+            if (!results) {
+                allResultsList.innerHTML = '<p style="color: #666; text-align: center;">لا توجد نتائج بعد</p>';
+                return;
+            }
+            
+            const resultsArray = Object.keys(results).map(key => ({ id: key, ...results[key] }));
+            resultsArray.sort((a, b) => new Date(b.completedAt) - new Date(a.completedAt));
+            
+            resultsArray.forEach(result => {
+                get(ref(db, 'exams/' + result.examId)).then((examSnap) => {
+                    const exam = examSnap.val();
+                    const percentage = Math.round((result.score / result.total) * 100);
+                    
+                    const resultCard = document.createElement('div');
+                    resultCard.className = 'exam-card';
+                    resultCard.innerHTML = `
+                        <div class="exam-header">
+                            <span class="exam-title">${exam ? exam.title : 'اختبار'}</span>
+                            <span class="exam-badge" style="background: ${percentage >= 70 ? '#00d25b' : '#ff4757'}">
+                                ${percentage}%
+                            </span>
+                        </div>
+                        <div class="exam-info">
+                            <span><i class="fas fa-check-circle" style="color: #00d25b;"></i> ${result.score}/${result.total}</span>
+                            <span><i class="far fa-calendar"></i> ${new Date(result.completedAt).toLocaleDateString('ar-EG')}</span>
+                        </div>
+                        <button class="action-btn btn-primary" onclick="showResultDetails('${result.id}')" style="margin-top: 10px; width: 100%; background: #667eea; color: white; border: none; padding: 10px; border-radius: 10px; cursor: pointer;">
+                            <i class="fas fa-eye"></i> عرض التفاصيل
+                        </button>
+                    `;
+                    allResultsList.appendChild(resultCard);
+                });
+            });
+        }
+
+        // Start exam
+        window.startExam = function(examId) {
+            showLoading(true);
+            get(ref(db, 'exams/' + examId)).then((snapshot) => {
+                currentExam = {
+                    id: examId,
+                    ...snapshot.val()
+                };
+                
+                currentQuestionIndex = 0;
+                answers = new Array(currentExam.questions.length).fill(null);
+                
+                document.getElementById('currentExamTitle').textContent = currentExam.title;
+                document.getElementById('examContainer').classList.add('active');
+                showLoading(false);
+                
+                showQuestion();
+            }).catch((error) => {
+                showLoading(false);
+                showToast('حدث خطأ في تحميل الاختبار', true);
+            });
+        }
+
+        // Show question
+        function showQuestion() {
+            if (!currentExam) return;
+            
+            const question = currentExam.questions[currentQuestionIndex];
+            const questionsArea = document.getElementById('questionsArea');
+            
+            let optionsHtml = '';
+            question.options.forEach((option, index) => {
+                optionsHtml += `
+                    <div class="option-btn ${answers[currentQuestionIndex] === index + 1 ? 'selected' : ''}" 
+                         onclick="selectOption(${index + 1})">
+                        ${option}
+                    </div>
+                `;
+            });
+            
+            questionsArea.innerHTML = `
+                <div class="question-box">
+                    <div class="question-text">
+                        <span style="background: #764ba2; color: white; padding: 5px 15px; border-radius: 50px; margin-left: 10px;">
+                            ${currentQuestionIndex + 1}/${currentExam.questions.length}
+                        </span>
+                        ${question.text}
+                    </div>
+                    <div class="options-grid">
+                        ${optionsHtml}
+                    </div>
+                </div>
+            `;
+            
+            // Start timer
+            startTimer();
+        }
+
+        // Start timer
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            
+            timeLeft = 60;
+            const timerElement = document.getElementById('timer');
+            timerElement.classList.remove('warning');
+            timerElement.textContent = timeLeft;
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerElement.textContent = timeLeft;
+                
+                if (timeLeft <= 10) {
+                    timerElement.classList.add('warning');
+                }
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    nextQuestion();
+                }
+            }, 1000);
+        }
+
+        // Select option
+        window.selectOption = function(optionNumber) {
+            answers[currentQuestionIndex] = optionNumber;
+            
+            // Update UI
+            const options = document.querySelectorAll('.option-btn');
+            options.forEach(opt => opt.classList.remove('selected'));
+            options[optionNumber - 1].classList.add('selected');
+            
+            // Auto move to next question after short delay
+            setTimeout(() => {
+                nextQuestion();
+            }, 500);
+        }
+
+        // Next question
+        function nextQuestion() {
+            clearInterval(timerInterval);
+            
+            if (currentQuestionIndex < currentExam.questions.length - 1) {
+                currentQuestionIndex++;
+                showQuestion();
+            } else {
+                // Exam completed
+                submitExam();
+            }
+        }
+
+        // Submit exam
+        window.submitExam = function() {
+            clearInterval(timerInterval);
+            
+            // Calculate score
+            let score = 0;
+            const wrongAnswers = [];
+            
+            currentExam.questions.forEach((question, index) => {
+                if (answers[index] === question.correct) {
+                    score++;
+                } else {
+                    wrongAnswers.push({
+                        question: question.text,
+                        userAnswer: answers[index] ? question.options[answers[index] - 1] : 'لم يتم الإجابة',
+                        correctAnswer: question.options[question.correct - 1]
+                    });
+                }
+            });
+            
+            showLoading(true);
+            
+            // Save result
+            const resultsRef = ref(db, 'results');
+            const newResultRef = push(resultsRef);
+            
+            set(newResultRef, {
+                studentId: currentStudent.id,
+                examId: currentExam.id,
+                score: score,
+                total: currentExam.questions.length,
+                answers: answers,
+                completedAt: new Date().toISOString()
+            }).then(() => {
+                showLoading(false);
+                
+                // Show result
+                document.getElementById('resultScore').textContent = score;
+                document.getElementById('resultTotal').textContent = currentExam.questions.length;
+                const percentage = Math.round((score / currentExam.questions.length) * 100);
+                document.getElementById('resultPercentage').textContent = percentage + '%';
+                
+                // Show wrong answers
+                const wrongAnswersList = document.getElementById('wrongAnswersList');
+                wrongAnswersList.innerHTML = '';
+                
+                if (wrongAnswers.length === 0) {
+                    wrongAnswersList.innerHTML = '<p style="color: #00d25b;">ممتاز! لا توجد إجابات خاطئة</p>';
+                } else {
+                    wrongAnswers.forEach((wrong, index) => {
+                        wrongAnswersList.innerHTML += `
+                            <div class="wrong-answer-item">
+                                <p><strong>السؤال:</strong> ${wrong.question}</p>
+                                <p style="color: #ff4757;"><strong>إجابتك:</strong> ${wrong.userAnswer}</p>
+                                <p style="color: #00d25b;"><strong>الإجابة الصحيحة:</strong> ${wrong.correctAnswer}</p>
+                            </div>
+                        `;
+                    });
+                }
+                
+                document.getElementById('resultModal').style.display = 'flex';
+            }).catch((error) => {
+                showLoading(false);
+                showToast('حدث خطأ في حفظ النتيجة', true);
+            });
+        }
+
+        // Show result details
+        window.showResultDetails = function(resultId) {
+            showLoading(true);
+            get(ref(db, 'results/' + resultId)).then((snapshot) => {
+                const result = snapshot.val();
+                
+                get(ref(db, 'exams/' + result.examId)).then((examSnap) => {
+                    const exam = examSnap.val();
+                    
+                    const wrongAnswers = [];
+                    exam.questions.forEach((question, index) => {
+                        if (result.answers[index] !== question.correct) {
+                            wrongAnswers.push({
+                                question: question.text,
+                                userAnswer: result.answers[index] ? question.options[result.answers[index] - 1] : 'لم يتم الإجابة',
+                                correctAnswer: question.options[question.correct - 1]
+                            });
+                        }
+                    });
+                    
+                    document.getElementById('resultScore').textContent = result.score;
+                    document.getElementById('resultTotal').textContent = result.total;
+                    const percentage = Math.round((result.score / result.total) * 100);
+                    document.getElementById('resultPercentage').textContent = percentage + '%';
+                    
+                    const wrongAnswersList = document.getElementById('wrongAnswersList');
+                    wrongAnswersList.innerHTML = '';
+                    
+                    if (wrongAnswers.length === 0) {
+                        wrongAnswersList.innerHTML = '<p style="color: #00d25b;">ممتاز! لا توجد إجابات خاطئة</p>';
+                    } else {
+                        wrongAnswers.forEach((wrong, index) => {
+                            wrongAnswersList.innerHTML += `
+                                <div class="wrong-answer-item">
+                                    <p><strong>السؤال:</strong> ${wrong.question}</p>
+                                    <p style="color: #ff4757;"><strong>إجابتك:</strong> ${wrong.userAnswer}</p>
+                                    <p style="color: #00d25b;"><strong>الإجابة الصحيحة:</strong> ${wrong.correctAnswer}</p>
+                                </div>
+                            `;
+                        });
+                    }
+                    
+                    showLoading(false);
+                    document.getElementById('resultModal').style.display = 'flex';
+                });
+            }).catch((error) => {
+                showLoading(false);
+                showToast('حدث خطأ في تحميل التفاصيل', true);
+            });
+        }
+
+        // Close result modal
+        window.closeResultModal = function() {
+            document.getElementById('resultModal').style.display = 'none';
+            exitExam();
+            loadStudentData();
+        }
+
+        // Exit exam
+        window.exitExam = function() {
+            document.getElementById('examContainer').classList.remove('active');
+            currentExam = null;
+            if (timerInterval) clearInterval(timerInterval);
+        }
+
+        // Toggle sidebar
+        window.toggleSidebar = function() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('mainContent').classList.toggle('shifted');
+        }
+
+        // Show section
+        window.showSection = function(section) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(section + '-section').classList.add('active');
+            
+            document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            // Close sidebar on mobile
+            if (window.innerWidth <= 768) {
+                toggleSidebar();
+            }
+            
+            // Refresh data when switching sections
+            if (section === 'new-exams') {
+                loadNewExams();
+            }
+        }
+
+        // Logout
+        window.logout = function() {
+            // Clear saved session
+            localStorage.removeItem('currentStudent');
+            localStorage.removeItem('rememberMe');
+            
+            currentStudent = null;
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('mainApp').style.display = 'none';
+            document.getElementById('sidebar').classList.remove('active');
+            document.getElementById('mainContent').classList.remove('shifted');
+            
+            // Clear inputs
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            
+            showToast('تم تسجيل الخروج بنجاح');
+        }
+
+        // Initialize
+        window.onload = function() {
+            // Check for saved session first
+            checkSavedSession();
+            
+            // If no saved session, show login page
+            if (!currentStudent) {
+                document.getElementById('loginPage').style.display = 'flex';
+                document.getElementById('mainApp').style.display = 'none';
+            }
+        }
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.querySelector('.menu-toggle');
+            
+            if (window.innerWidth <= 768 && 
+                sidebar.classList.contains('active') && 
+                !sidebar.contains(event.target) && 
+                !toggle.contains(event.target)) {
+                toggleSidebar();
+            }
+        });
+
+        // Prevent loss of session on page refresh/navigation
+        window.addEventListener('beforeunload', function() {
+            // Session is already saved in localStorage if rememberMe was checked
+            // Nothing needed here
+        });
+    </script>
+</body>
+</html>
