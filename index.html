@@ -23,8 +23,8 @@
             padding-bottom: 60px;
         }
 
-        /* Login Page */
-        .login-container {
+        /* Login & Register Pages */
+        .auth-container {
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -32,12 +32,12 @@
             padding: 15px;
         }
 
-        .login-card {
+        .auth-card {
             background: white;
             border-radius: 30px;
             padding: 40px;
             width: 100%;
-            max-width: 400px;
+            max-width: 500px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             animation: slideUp 0.5s ease;
         }
@@ -53,12 +53,12 @@
             }
         }
 
-        .login-header {
+        .auth-header {
             text-align: center;
             margin-bottom: 30px;
         }
 
-        .login-header i {
+        .auth-header i {
             font-size: 60px;
             background: linear-gradient(135deg, #667eea, #764ba2);
             -webkit-background-clip: text;
@@ -66,18 +66,65 @@
             margin-bottom: 15px;
         }
 
-        .login-header h1 {
+        .auth-header h1 {
             color: #764ba2;
             font-size: 1.8rem;
         }
 
-        .login-header p {
+        .auth-header p {
             color: #666;
             margin-top: 10px;
         }
 
+        .auth-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 50px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 50px;
+            background: transparent;
+            color: #666;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .auth-tab.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .auth-form {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .input-group {
             margin-bottom: 20px;
+            position: relative;
         }
 
         .input-group label {
@@ -87,19 +134,73 @@
             font-weight: 600;
         }
 
-        .input-group input {
+        .input-group label i {
+            color: #667eea;
+            margin-left: 5px;
+        }
+
+        .input-group input,
+        .input-group select {
             width: 100%;
             padding: 15px;
             border: 2px solid #e0e0e0;
             border-radius: 15px;
             font-size: 1rem;
             transition: all 0.3s;
+            font-family: 'Tajawal', sans-serif;
         }
 
-        .input-group input:focus {
+        .input-group input:focus,
+        .input-group select:focus {
             border-color: #667eea;
             outline: none;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-group input.error {
+            border-color: #ff4757;
+            animation: shake 0.3s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .password-strength {
+            margin-top: 5px;
+            height: 5px;
+            border-radius: 5px;
+            background: #e0e0e0;
+            overflow: hidden;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: all 0.3s;
+        }
+
+        .password-strength-bar.weak {
+            width: 33.33%;
+            background: #ff4757;
+        }
+
+        .password-strength-bar.medium {
+            width: 66.66%;
+            background: #ffab2d;
+        }
+
+        .password-strength-bar.strong {
+            width: 100%;
+            background: #00d25b;
+        }
+
+        .password-hint {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 5px;
         }
 
         .remember-me {
@@ -120,7 +221,7 @@
             cursor: pointer;
         }
 
-        .login-btn {
+        .auth-btn {
             width: 100%;
             padding: 15px;
             border: none;
@@ -137,9 +238,26 @@
             gap: 10px;
         }
 
-        .login-btn:hover {
+        .auth-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .auth-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+        }
+
+        .auth-link span {
+            color: #667eea;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .auth-link span:hover {
+            color: #764ba2;
         }
 
         /* Main App */
@@ -655,6 +773,10 @@
                 font-size: 0.8rem;
                 padding: 10px;
             }
+            
+            .auth-card {
+                padding: 20px;
+            }
         }
     </style>
 </head>
@@ -665,29 +787,98 @@
         <div class="loading-text">جاري تحميل البيانات...</div>
     </div>
 
-    <!-- Login Page -->
-    <div id="loginPage" class="login-container">
-        <div class="login-card">
-            <div class="login-header">
+    <!-- Auth Container (Login & Register) -->
+    <div id="authContainer" class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
                 <i class="fas fa-graduation-cap"></i>
                 <h1>نظام الاختبارات</h1>
-                <p>تسجيل الدخول للطلاب</p>
+                <p>منصة تعليمية متكاملة</p>
             </div>
-            <div class="input-group">
-                <label><i class="fas fa-user"></i> اسم المستخدم</label>
-                <input type="text" id="username" placeholder="أدخل اسم المستخدم">
+
+            <!-- Auth Tabs -->
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="switchAuthTab('login')">
+                    <i class="fas fa-sign-in-alt"></i>
+                    تسجيل دخول
+                </button>
+                <button class="auth-tab" onclick="switchAuthTab('register')">
+                    <i class="fas fa-user-plus"></i>
+                    إنشاء حساب
+                </button>
             </div>
-            <div class="input-group">
-                <label><i class="fas fa-lock"></i> كلمة المرور</label>
-                <input type="password" id="password" placeholder="أدخل كلمة المرور">
+
+            <!-- Login Form -->
+            <div id="loginForm" class="auth-form active">
+                <div class="input-group">
+                    <label><i class="fas fa-user"></i> اسم المستخدم</label>
+                    <input type="text" id="loginUsername" placeholder="أدخل اسم المستخدم">
+                </div>
+                <div class="input-group">
+                    <label><i class="fas fa-lock"></i> كلمة المرور</label>
+                    <input type="password" id="loginPassword" placeholder="أدخل كلمة المرور">
+                </div>
+                <div class="remember-me">
+                    <input type="checkbox" id="rememberMe" checked>
+                    <label for="rememberMe">تذكرني</label>
+                </div>
+                <button class="auth-btn" onclick="login()">
+                    <i class="fas fa-sign-in-alt"></i> دخول
+                </button>
+                <div class="auth-link">
+                    ليس لديك حساب؟ <span onclick="switchAuthTab('register')">إنشاء حساب جديد</span>
+                </div>
             </div>
-            <div class="remember-me">
-                <input type="checkbox" id="rememberMe" checked>
-                <label for="rememberMe">تذكرني</label>
+
+            <!-- Register Form -->
+            <div id="registerForm" class="auth-form">
+                <div class="input-group">
+                    <label><i class="fas fa-user"></i> الاسم الثلاثي</label>
+                    <input type="text" id="registerName" placeholder="أدخل اسمك الثلاثي">
+                </div>
+                <div class="input-group">
+                    <label><i class="fas fa-graduation-cap"></i> المرحلة الدراسية</label>
+                    <select id="registerGrade">
+                        <option value="">اختر المرحلة</option>
+                        <option value="المرحلة الأولى">المرحلة الأولى</option>
+                        <option value="المرحلة الثانية">المرحلة الثانية</option>
+                        <option value="المرحلة الثالثة">المرحلة الثالثة</option>
+                        <option value="المرحلة الرابعة">المرحلة الرابعة</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label><i class="fab fa-telegram"></i> معرف التليجرام</label>
+                    <input type="text" id="registerTelegram" placeholder="@username">
+                </div>
+                <div class="input-group">
+                    <label><i class="fas fa-user-circle"></i> اسم المستخدم</label>
+                    <input type="text" id="registerUsername" placeholder="اختر اسم مستخدم">
+                </div>
+                <div class="input-group">
+                    <label><i class="fas fa-lock"></i> كلمة المرور</label>
+                    <input type="password" id="registerPassword" placeholder="أدخل كلمة المرور" onkeyup="checkPasswordStrength()">
+                    <div class="password-strength">
+                        <div id="passwordStrengthBar" class="password-strength-bar"></div>
+                    </div>
+                    <div class="password-hint" id="passwordHint">
+                        كلمة المرور يجب أن تحتوي على 8 أحرف على الأقل
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label><i class="fas fa-lock"></i> تأكيد كلمة المرور</label>
+                    <input type="password" id="registerConfirmPassword" placeholder="أعد إدخال كلمة المرور">
+                </div>
+                <div class="remember-me">
+                    <input type="checkbox" id="agreeTerms" checked>
+                    <label for="agreeTerms">أوافق على شروط الاستخدام</label>
+                </div>
+                <button class="auth-btn" onclick="register()">
+                    <i class="fas fa-user-plus"></i> إنشاء حساب
+                </button>
+                <div class="auth-link">
+                    لديك حساب بالفعل؟ <span onclick="switchAuthTab('login')">تسجيل دخول</span>
+                </div>
             </div>
-            <button class="login-btn" onclick="login()">
-                <i class="fas fa-sign-in-alt"></i> دخول
-            </button>
         </div>
     </div>
 
@@ -712,6 +903,10 @@
                 <div class="menu-item" onclick="showSection('results')">
                     <i class="fas fa-chart-line"></i>
                     <span>نتائجي</span>
+                </div>
+                <div class="menu-item" onclick="showSection('profile')">
+                    <i class="fas fa-user-circle"></i>
+                    <span>ملفي الشخصي</span>
                 </div>
                 <div class="menu-item" onclick="logout()">
                     <i class="fas fa-sign-out-alt"></i>
@@ -780,6 +975,19 @@
                     <div id="allResultsList"></div>
                 </div>
             </div>
+
+            <!-- Profile Section -->
+            <div id="profile-section" class="section">
+                <div class="content-card">
+                    <h3 style="color: #764ba2; margin-bottom: 20px;"><i class="fas fa-user-circle"></i> ملفي الشخصي</h3>
+                    <div id="profileInfo" style="margin: 20px 0;">
+                        <!-- Profile info will be displayed here -->
+                    </div>
+                    <button class="auth-btn" onclick="showEditProfile()" style="margin-top: 20px;">
+                        <i class="fas fa-edit"></i> تعديل الملف الشخصي
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -799,7 +1007,7 @@
         <div id="questionsArea"></div>
         
         <div style="padding: 20px; text-align: center;">
-            <button class="login-btn" onclick="submitExam()" style="width: auto; padding: 15px 50px;">
+            <button class="auth-btn" onclick="submitExam()" style="width: auto; padding: 15px 50px;">
                 <i class="fas fa-check-circle"></i> إنهاء الاختبار
             </button>
         </div>
@@ -819,8 +1027,37 @@
             </div>
             <h3 style="color: #764ba2; margin: 20px 0;">الإجابات الخاطئة:</h3>
             <div id="wrongAnswersList"></div>
-            <button class="login-btn" onclick="closeResultModal()" style="margin-top: 20px;">
+            <button class="auth-btn" onclick="closeResultModal()" style="margin-top: 20px;">
                 <i class="fas fa-check"></i> حسناً
+            </button>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="editProfileModal" class="result-modal" style="display: none;">
+        <div class="result-content">
+            <h2 style="color: #764ba2; text-align: center;">تعديل الملف الشخصي</h2>
+            <div class="input-group">
+                <label><i class="fas fa-user"></i> الاسم الثلاثي</label>
+                <input type="text" id="editName" placeholder="الاسم الثلاثي">
+            </div>
+            <div class="input-group">
+                <label><i class="fab fa-telegram"></i> معرف التليجرام</label>
+                <input type="text" id="editTelegram" placeholder="@username">
+            </div>
+            <div class="input-group">
+                <label><i class="fas fa-lock"></i> كلمة المرور الجديدة</label>
+                <input type="password" id="editNewPassword" placeholder="اترك فارغاً إذا لم ترد التغيير">
+            </div>
+            <div class="input-group">
+                <label><i class="fas fa-lock"></i> تأكيد كلمة المرور الجديدة</label>
+                <input type="password" id="editConfirmPassword" placeholder="أعد إدخال كلمة المرور">
+            </div>
+            <button class="auth-btn" onclick="updateProfile()" style="margin-top: 20px;">
+                <i class="fas fa-save"></i> حفظ التغييرات
+            </button>
+            <button class="auth-btn" onclick="closeEditProfileModal()" style="margin-top: 10px; background: #ff4757;">
+                <i class="fas fa-times"></i> إلغاء
             </button>
         </div>
     </div>
@@ -877,6 +1114,173 @@
             document.getElementById('loadingOverlay').classList.toggle('active', show);
         }
 
+        // Switch between login and register tabs
+        window.switchAuthTab = function(tab) {
+            // Update tabs
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            event.target.closest('.auth-tab').classList.add('active');
+            
+            // Update forms
+            document.getElementById('loginForm').classList.remove('active');
+            document.getElementById('registerForm').classList.remove('active');
+            document.getElementById(tab + 'Form').classList.add('active');
+        }
+
+        // Check password strength
+        window.checkPasswordStrength = function() {
+            const password = document.getElementById('registerPassword').value;
+            const strengthBar = document.getElementById('passwordStrengthBar');
+            const hint = document.getElementById('passwordHint');
+            
+            strengthBar.className = 'password-strength-bar';
+            
+            if (password.length === 0) {
+                strengthBar.style.width = '0%';
+                hint.textContent = 'كلمة المرور يجب أن تحتوي على 8 أحرف على الأقل';
+                return;
+            }
+            
+            let strength = 0;
+            
+            // Length check
+            if (password.length >= 8) strength++;
+            if (password.length >= 12) strength++;
+            
+            // Character variety checks
+            if (/[a-z]/.test(password)) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^a-zA-Z0-9]/.test(password)) strength++;
+            
+            if (strength <= 2) {
+                strengthBar.classList.add('weak');
+                hint.textContent = 'كلمة مرور ضعيفة';
+            } else if (strength <= 4) {
+                strengthBar.classList.add('medium');
+                hint.textContent = 'كلمة مرور متوسطة';
+            } else {
+                strengthBar.classList.add('strong');
+                hint.textContent = 'كلمة مرور قوية';
+            }
+        }
+
+        // Register new student
+        window.register = function() {
+            const name = document.getElementById('registerName').value.trim();
+            const grade = document.getElementById('registerGrade').value;
+            const telegram = document.getElementById('registerTelegram').value.trim();
+            const username = document.getElementById('registerUsername').value.trim();
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('registerConfirmPassword').value;
+            const agreeTerms = document.getElementById('agreeTerms').checked;
+            
+            // Validation
+            if (!name || !grade || !telegram || !username || !password) {
+                showToast('الرجاء ملء جميع الحقول', true);
+                return;
+            }
+            
+            if (!agreeTerms) {
+                showToast('يجب الموافقة على شروط الاستخدام', true);
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showToast('كلمة المرور غير متطابقة', true);
+                return;
+            }
+            
+            if (password.length < 8) {
+                showToast('كلمة المرور يجب أن تكون 8 أحرف على الأقل', true);
+                return;
+            }
+            
+            // Validate telegram format
+            if (!telegram.startsWith('@')) {
+                showToast('معرف التليجرام يجب أن يبدأ بـ @', true);
+                return;
+            }
+            
+            showLoading(true);
+            
+            // Check if username already exists
+            const studentsRef = ref(db, 'students');
+            get(studentsRef).then((snapshot) => {
+                const students = snapshot.val();
+                let usernameExists = false;
+                
+                if (students) {
+                    Object.values(students).forEach(student => {
+                        if (student.username === username) {
+                            usernameExists = true;
+                        }
+                    });
+                }
+                
+                if (usernameExists) {
+                    showLoading(false);
+                    showToast('اسم المستخدم موجود بالفعل، الرجاء اختيار اسم آخر', true);
+                    return;
+                }
+                
+                // Create new student
+                const newStudentRef = push(studentsRef);
+                
+                set(newStudentRef, {
+                    name: name,
+                    grade: grade,
+                    telegram: telegram,
+                    username: username,
+                    password: password,
+                    createdAt: new Date().toISOString(),
+                    lastLogin: new Date().toISOString()
+                }).then(() => {
+                    showLoading(false);
+                    showToast('✅ تم إنشاء الحساب بنجاح');
+                    
+                    // Auto login
+                    currentStudent = {
+                        id: newStudentRef.key,
+                        name: name,
+                        grade: grade,
+                        telegram: telegram,
+                        username: username,
+                        password: password
+                    };
+                    
+                    // Save session if remember me is checked
+                    if (document.getElementById('rememberMe').checked) {
+                        localStorage.setItem('currentStudent', JSON.stringify(currentStudent));
+                        localStorage.setItem('rememberMe', 'true');
+                    }
+                    
+                    // Show main app
+                    document.getElementById('authContainer').style.display = 'none';
+                    document.getElementById('mainApp').style.display = 'block';
+                    
+                    // Update UI with student info
+                    document.getElementById('sidebarStudentName').textContent = currentStudent.name;
+                    document.getElementById('sidebarStudentGrade').textContent = currentStudent.grade;
+                    document.getElementById('headerStudentName').textContent = currentStudent.name.split(' ')[0];
+                    document.getElementById('displayStudentName').textContent = currentStudent.name;
+                    document.getElementById('displayStudentGrade').innerHTML = `<i class="fas fa-layer-group"></i> ${currentStudent.grade}`;
+                    
+                    loadStudentData();
+                    
+                    // Clear registration form
+                    document.getElementById('registerName').value = '';
+                    document.getElementById('registerGrade').value = '';
+                    document.getElementById('registerTelegram').value = '';
+                    document.getElementById('registerUsername').value = '';
+                    document.getElementById('registerPassword').value = '';
+                    document.getElementById('registerConfirmPassword').value = '';
+                }).catch((error) => {
+                    showLoading(false);
+                    showToast('حدث خطأ: ' + error.message, true);
+                });
+            });
+        }
+
         // Check for saved session on page load
         window.checkSavedSession = function() {
             const savedStudent = localStorage.getItem('currentStudent');
@@ -892,7 +1296,7 @@
                     get(studentRef).then((snapshot) => {
                         if (snapshot.exists()) {
                             // Student still exists, login automatically
-                            document.getElementById('loginPage').style.display = 'none';
+                            document.getElementById('authContainer').style.display = 'none';
                             document.getElementById('mainApp').style.display = 'block';
                             
                             // Update UI with student info
@@ -923,8 +1327,8 @@
 
         // Login function
         window.login = function() {
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value.trim();
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
             const rememberMe = document.getElementById('rememberMe').checked;
 
             if (!username || !password) {
@@ -958,6 +1362,12 @@
                 if (foundStudent) {
                     currentStudent = foundStudent;
                     
+                    // Update last login
+                    const studentRef = ref(db, 'students/' + foundStudent.id);
+                    update(studentRef, {
+                        lastLogin: new Date().toISOString()
+                    });
+                    
                     // Save session if remember me is checked
                     if (rememberMe) {
                         localStorage.setItem('currentStudent', JSON.stringify(currentStudent));
@@ -968,7 +1378,7 @@
                         localStorage.removeItem('rememberMe');
                     }
                     
-                    document.getElementById('loginPage').style.display = 'none';
+                    document.getElementById('authContainer').style.display = 'none';
                     document.getElementById('mainApp').style.display = 'block';
                     
                     // Update UI with student info
@@ -1024,6 +1434,98 @@
             });
             
             loadNewExams();
+            loadProfileInfo();
+        }
+
+        // Load profile info
+        function loadProfileInfo() {
+            if (!currentStudent) return;
+            
+            const profileInfo = document.getElementById('profileInfo');
+            profileInfo.innerHTML = `
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 15px;">
+                    <p><strong><i class="fas fa-user" style="color: #667eea;"></i> الاسم:</strong> ${currentStudent.name}</p>
+                    <p><strong><i class="fas fa-graduation-cap" style="color: #667eea;"></i> المرحلة:</strong> ${currentStudent.grade}</p>
+                    <p><strong><i class="fab fa-telegram" style="color: #0088cc;"></i> التليجرام:</strong> ${currentStudent.telegram}</p>
+                    <p><strong><i class="fas fa-user-circle" style="color: #667eea;"></i> اسم المستخدم:</strong> ${currentStudent.username}</p>
+                    <p><strong><i class="far fa-calendar" style="color: #667eea;"></i> تاريخ التسجيل:</strong> ${new Date(currentStudent.createdAt).toLocaleString('ar-EG')}</p>
+                    ${currentStudent.lastLogin ? `<p><strong><i class="fas fa-clock" style="color: #667eea;"></i> آخر دخول:</strong> ${new Date(currentStudent.lastLogin).toLocaleString('ar-EG')}</p>` : ''}
+                </div>
+            `;
+        }
+
+        // Show edit profile modal
+        window.showEditProfile = function() {
+            document.getElementById('editName').value = currentStudent.name;
+            document.getElementById('editTelegram').value = currentStudent.telegram;
+            document.getElementById('editNewPassword').value = '';
+            document.getElementById('editConfirmPassword').value = '';
+            document.getElementById('editProfileModal').style.display = 'flex';
+        }
+
+        // Close edit profile modal
+        window.closeEditProfileModal = function() {
+            document.getElementById('editProfileModal').style.display = 'none';
+        }
+
+        // Update profile
+        window.updateProfile = function() {
+            const name = document.getElementById('editName').value.trim();
+            const telegram = document.getElementById('editTelegram').value.trim();
+            const newPassword = document.getElementById('editNewPassword').value;
+            const confirmPassword = document.getElementById('editConfirmPassword').value;
+            
+            if (!name || !telegram) {
+                showToast('الرجاء ملء جميع الحقول', true);
+                return;
+            }
+            
+            if (!telegram.startsWith('@')) {
+                showToast('معرف التليجرام يجب أن يبدأ بـ @', true);
+                return;
+            }
+            
+            const updateData = {
+                name: name,
+                telegram: telegram
+            };
+            
+            if (newPassword) {
+                if (newPassword.length < 8) {
+                    showToast('كلمة المرور يجب أن تكون 8 أحرف على الأقل', true);
+                    return;
+                }
+                if (newPassword !== confirmPassword) {
+                    showToast('كلمة المرور غير متطابقة', true);
+                    return;
+                }
+                updateData.password = newPassword;
+            }
+            
+            showLoading(true);
+            
+            const studentRef = ref(db, 'students/' + currentStudent.id);
+            update(studentRef, updateData).then(() => {
+                showLoading(false);
+                showToast('✅ تم تحديث الملف الشخصي بنجاح');
+                
+                // Update local student object
+                currentStudent = {
+                    ...currentStudent,
+                    ...updateData
+                };
+                
+                // Update UI
+                document.getElementById('sidebarStudentName').textContent = currentStudent.name;
+                document.getElementById('headerStudentName').textContent = currentStudent.name.split(' ')[0];
+                document.getElementById('displayStudentName').textContent = currentStudent.name;
+                
+                loadProfileInfo();
+                closeEditProfileModal();
+            }).catch((error) => {
+                showLoading(false);
+                showToast('حدث خطأ: ' + error.message, true);
+            });
         }
 
         // Load recent exams
@@ -1427,6 +1929,8 @@
             // Refresh data when switching sections
             if (section === 'new-exams') {
                 loadNewExams();
+            } else if (section === 'profile') {
+                loadProfileInfo();
             }
         }
 
@@ -1437,14 +1941,14 @@
             localStorage.removeItem('rememberMe');
             
             currentStudent = null;
-            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('authContainer').style.display = 'flex';
             document.getElementById('mainApp').style.display = 'none';
             document.getElementById('sidebar').classList.remove('active');
             document.getElementById('mainContent').classList.remove('shifted');
             
             // Clear inputs
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
             
             showToast('تم تسجيل الخروج بنجاح');
         }
@@ -1454,9 +1958,9 @@
             // Check for saved session first
             checkSavedSession();
             
-            // If no saved session, show login page
+            // If no saved session, show auth page
             if (!currentStudent) {
-                document.getElementById('loginPage').style.display = 'flex';
+                document.getElementById('authContainer').style.display = 'flex';
                 document.getElementById('mainApp').style.display = 'none';
             }
         }
@@ -1474,11 +1978,18 @@
             }
         });
 
-        // Prevent loss of session on page refresh/navigation
-        window.addEventListener('beforeunload', function() {
-            // Session is already saved in localStorage if rememberMe was checked
-            // Nothing needed here
-        });
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            const resultModal = document.getElementById('resultModal');
+            const editProfileModal = document.getElementById('editProfileModal');
+            
+            if (event.target == resultModal) {
+                closeResultModal();
+            }
+            if (event.target == editProfileModal) {
+                closeEditProfileModal();
+            }
+        }
     </script>
 </body>
 </html>
