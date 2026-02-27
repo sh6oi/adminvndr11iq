@@ -470,6 +470,7 @@
             border: 2px solid #e0e0e0;
             transition: all 0.3s;
             cursor: pointer;
+            position: relative;
         }
 
         .exam-card:hover {
@@ -508,6 +509,20 @@
             font-size: 0.9rem;
         }
 
+        .progress-badge {
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: #ffab2d;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            box-shadow: 0 3px 10px rgba(255,171,45,0.3);
+            z-index: 1;
+        }
+
         .start-exam-btn {
             background: linear-gradient(135deg, #00d2ff, #3a7bd5);
             color: white;
@@ -524,6 +539,24 @@
         .start-exam-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0, 210, 255, 0.3);
+        }
+
+        .continue-exam-btn {
+            background: linear-gradient(135deg, #ffab2d, #ff8c00);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .continue-exam-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 171, 45, 0.3);
         }
 
         .exam-container {
@@ -549,6 +582,17 @@
             position: sticky;
             top: 0;
             z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .exam-progress {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-size: 0.9rem;
         }
 
         .timer {
@@ -685,6 +729,109 @@
             to { top: 20px; opacity: 1; }
         }
 
+        /* Confirmation Modal */
+        .confirm-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3500;
+            animation: fadeIn 0.3s;
+        }
+
+        .confirm-content {
+            background: white;
+            border-radius: 30px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            animation: scaleIn 0.3s;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .confirm-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+            font-size: 40px;
+        }
+
+        .confirm-title {
+            color: #764ba2;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .confirm-message {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .confirm-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .confirm-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .confirm-btn-yes {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .confirm-btn-yes:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .confirm-btn-no {
+            background: #ff4757;
+            color: white;
+        }
+
+        .confirm-btn-no:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
+        }
+
+        .question-counter {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+        }
+
         /* Footer */
         .footer {
             position: fixed;
@@ -758,6 +905,29 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+
+        /* Save Progress Indicator */
+        .save-indicator {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: #00d25b;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 3px 10px rgba(0,210,91,0.3);
+            animation: slideInRight 0.3s;
+            z-index: 100;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
         @media (max-width: 768px) {
@@ -994,12 +1164,13 @@
     <!-- Exam Container -->
     <div id="examContainer" class="exam-container">
         <div class="exam-header-bar">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
                 <h2 id="currentExamTitle"></h2>
-                <button onclick="exitExam()" style="background: none; border: none; color: white; font-size: 24px;">
-                    <i class="fas fa-times"></i>
-                </button>
+                <div class="exam-progress" id="examProgress">السؤال 1 / 0</div>
             </div>
+            <button onclick="showExitConfirmModal()" style="background: none; border: none; color: white; font-size: 24px;">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
         
         <div class="timer" id="timer">60</div>
@@ -1007,9 +1178,51 @@
         <div id="questionsArea"></div>
         
         <div style="padding: 20px; text-align: center;">
-            <button class="auth-btn" onclick="submitExam()" style="width: auto; padding: 15px 50px;">
+            <button class="auth-btn" onclick="showConfirmModal()" style="width: auto; padding: 15px 50px;">
                 <i class="fas fa-check-circle"></i> إنهاء الاختبار
             </button>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal for Finish -->
+    <div id="confirmModal" class="confirm-modal" style="display: none;">
+        <div class="confirm-content">
+            <div class="confirm-icon">
+                <i class="fas fa-question-circle"></i>
+            </div>
+            <h3 class="confirm-title">تأكيد إنهاء الاختبار</h3>
+            <p class="confirm-message" id="confirmMessage">
+                هل أنت متأكد من إنهاء الاختبار والإجابة على جميع الأسئلة؟
+            </p>
+            <div class="confirm-buttons">
+                <button class="confirm-btn confirm-btn-yes" onclick="submitExam()">
+                    <i class="fas fa-check"></i> نعم، إنهاء
+                </button>
+                <button class="confirm-btn confirm-btn-no" onclick="closeConfirmModal()">
+                    <i class="fas fa-times"></i> إلغاء
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal for Exit -->
+    <div id="exitConfirmModal" class="confirm-modal" style="display: none;">
+        <div class="confirm-content">
+            <div class="confirm-icon">
+                <i class="fas fa-exclamation-triangle" style="background: #ffab2d;"></i>
+            </div>
+            <h3 class="confirm-title">تأكيد الخروج</h3>
+            <p class="confirm-message">
+                هل تريد حفظ تقدمك والخروج؟ يمكنك العودة لاحقاً وإكمال الاختبار من حيث توقفت.
+            </p>
+            <div class="confirm-buttons">
+                <button class="confirm-btn confirm-btn-yes" onclick="saveAndExitExam()">
+                    <i class="fas fa-save"></i> نعم، حفظ وخروج
+                </button>
+                <button class="confirm-btn confirm-btn-no" onclick="closeExitConfirmModal()">
+                    <i class="fas fa-times"></i> إلغاء
+                </button>
+            </div>
         </div>
     </div>
 
@@ -1062,6 +1275,12 @@
         </div>
     </div>
 
+    <!-- Save Progress Indicator -->
+    <div id="saveIndicator" class="save-indicator" style="display: none;">
+        <i class="fas fa-check-circle"></i>
+        <span>تم حفظ التقدم</span>
+    </div>
+
     <!-- Footer with rights -->
     <div class="footer">
         <i class="fas fa-heart"></i>
@@ -1096,6 +1315,10 @@
         let answers = [];
         let timerInterval = null;
         let timeLeft = 60;
+        let examStartTime = null;
+
+        // LocalStorage keys
+        const EXAM_PROGRESS_KEY = 'examProgress';
 
         // Toast notification
         function showToast(message, isError = false) {
@@ -1112,6 +1335,92 @@
         // Show loading overlay
         function showLoading(show = true) {
             document.getElementById('loadingOverlay').classList.toggle('active', show);
+        }
+
+        // Show save indicator
+        function showSaveIndicator() {
+            const indicator = document.getElementById('saveIndicator');
+            indicator.style.display = 'flex';
+            
+            setTimeout(() => {
+                indicator.style.display = 'none';
+            }, 2000);
+        }
+
+        // Save exam progress to localStorage
+        function saveExamProgress() {
+            if (!currentStudent || !currentExam) return;
+            
+            const progress = {
+                studentId: currentStudent.id,
+                examId: currentExam.id,
+                examData: currentExam,
+                currentQuestionIndex: currentQuestionIndex,
+                answers: answers,
+                timestamp: new Date().getTime()
+            };
+            
+            localStorage.setItem(EXAM_PROGRESS_KEY, JSON.stringify(progress));
+            showSaveIndicator();
+        }
+
+        // Load exam progress from localStorage
+        function loadExamProgress() {
+            if (!currentStudent) return null;
+            
+            const saved = localStorage.getItem(EXAM_PROGRESS_KEY);
+            if (!saved) return null;
+            
+            try {
+                const progress = JSON.parse(saved);
+                
+                // Check if progress belongs to current student and is less than 24 hours old
+                if (progress.studentId === currentStudent.id && 
+                    (new Date().getTime() - progress.timestamp) < 24 * 60 * 60 * 1000) {
+                    return progress;
+                } else {
+                    // Clear old progress
+                    localStorage.removeItem(EXAM_PROGRESS_KEY);
+                    return null;
+                }
+            } catch (e) {
+                console.error('Error loading exam progress:', e);
+                localStorage.removeItem(EXAM_PROGRESS_KEY);
+                return null;
+            }
+        }
+
+        // Clear exam progress
+        function clearExamProgress() {
+            localStorage.removeItem(EXAM_PROGRESS_KEY);
+        }
+
+        // Show confirmation modal for finish
+        window.showConfirmModal = function() {
+            document.getElementById('confirmModal').style.display = 'flex';
+        }
+
+        // Close confirmation modal
+        window.closeConfirmModal = function() {
+            document.getElementById('confirmModal').style.display = 'none';
+        }
+
+        // Show confirmation modal for exit
+        window.showExitConfirmModal = function() {
+            document.getElementById('exitConfirmModal').style.display = 'flex';
+        }
+
+        // Close exit confirmation modal
+        window.closeExitConfirmModal = function() {
+            document.getElementById('exitConfirmModal').style.display = 'none';
+        }
+
+        // Save and exit exam
+        window.saveAndExitExam = function() {
+            saveExamProgress();
+            closeExitConfirmModal();
+            exitExam();
+            showToast('تم حفظ تقدمك، يمكنك العودة لاحقاً لإكمال الاختبار');
         }
 
         // Switch between login and register tabs
@@ -1562,7 +1871,7 @@
             });
         }
 
-        // Load new exams
+        // Load new exams with progress check
         window.loadNewExams = function() {
             if (!currentStudent) return;
             
@@ -1593,15 +1902,29 @@
                     const completedExams = resultsSnap.val();
                     const completedExamIds = completedExams ? Object.values(completedExams).map(r => r.examId) : [];
                     
+                    // Check saved progress
+                    const savedProgress = loadExamProgress();
+                    
                     let hasNewExams = false;
                     
                     Object.keys(filteredExams).forEach(key => {
                         const exam = filteredExams[key];
                         if (!completedExamIds.includes(key)) {
                             hasNewExams = true;
+                            
+                            // Check if there's saved progress for this exam
+                            const hasProgress = savedProgress && savedProgress.examId === key;
+                            
                             const examCard = document.createElement('div');
                             examCard.className = 'exam-card';
+                            if (hasProgress) {
+                                examCard.classList.add('has-progress');
+                            }
+                            
+                            const progress = hasProgress ? Math.round((savedProgress.currentQuestionIndex / exam.questions.length) * 100) : 0;
+                            
                             examCard.innerHTML = `
+                                ${hasProgress ? `<div class="progress-badge"><i class="fas fa-sync-alt"></i> تقدم: ${savedProgress.currentQuestionIndex + 1}/${exam.questions.length}</div>` : ''}
                                 <div class="exam-header">
                                     <span class="exam-title">${exam.title}</span>
                                     <span class="exam-badge"><i class="far fa-clock"></i> ${exam.questions.length} أسئلة</span>
@@ -1610,8 +1933,9 @@
                                     <span><i class="fas fa-question-circle"></i> ${exam.questions.length} سؤال</span>
                                     <span><i class="far fa-clock"></i> 60 ثانية لكل سؤال</span>
                                 </div>
-                                <button class="start-exam-btn" onclick="startExam('${key}')">
-                                    <i class="fas fa-play"></i> بدء الاختبار
+                                <button class="${hasProgress ? 'continue-exam-btn' : 'start-exam-btn'}" onclick="startExam('${key}')">
+                                    <i class="fas ${hasProgress ? 'fa-play-circle' : 'fa-play'}"></i> 
+                                    ${hasProgress ? 'استكمال الاختبار' : 'بدء الاختبار'}
                                 </button>
                             `;
                             newExamsList.appendChild(examCard);
@@ -1665,19 +1989,35 @@
             });
         }
 
-        // Start exam
+        // Start exam with progress check
         window.startExam = function(examId) {
             showLoading(true);
+            
+            // Check for saved progress first
+            const savedProgress = loadExamProgress();
+            
             get(ref(db, 'exams/' + examId)).then((snapshot) => {
+                const exam = snapshot.val();
+                
                 currentExam = {
                     id: examId,
-                    ...snapshot.val()
+                    ...exam
                 };
                 
-                currentQuestionIndex = 0;
-                answers = new Array(currentExam.questions.length).fill(null);
+                // If there's saved progress for this exam, restore it
+                if (savedProgress && savedProgress.examId === examId) {
+                    currentQuestionIndex = savedProgress.currentQuestionIndex;
+                    answers = savedProgress.answers;
+                    showToast('تم استعادة تقدمك السابق');
+                } else {
+                    currentQuestionIndex = 0;
+                    answers = new Array(currentExam.questions.length).fill(null);
+                }
+                
+                examStartTime = new Date().getTime();
                 
                 document.getElementById('currentExamTitle').textContent = currentExam.title;
+                document.getElementById('examProgress').textContent = `السؤال ${currentQuestionIndex + 1} / ${currentExam.questions.length}`;
                 document.getElementById('examContainer').classList.add('active');
                 showLoading(false);
                 
@@ -1719,6 +2059,9 @@
                 </div>
             `;
             
+            // Update progress in header
+            document.getElementById('examProgress').textContent = `السؤال ${currentQuestionIndex + 1} / ${currentExam.questions.length}`;
+            
             // Start timer
             startTimer();
         }
@@ -1756,6 +2099,9 @@
             options.forEach(opt => opt.classList.remove('selected'));
             options[optionNumber - 1].classList.add('selected');
             
+            // Auto save progress
+            saveExamProgress();
+            
             // Auto move to next question after short delay
             setTimeout(() => {
                 nextQuestion();
@@ -1769,14 +2115,19 @@
             if (currentQuestionIndex < currentExam.questions.length - 1) {
                 currentQuestionIndex++;
                 showQuestion();
+                // Save progress after moving to next question
+                saveExamProgress();
             } else {
-                // Exam completed
-                submitExam();
+                // Exam completed - show confirmation
+                showConfirmModal();
             }
         }
 
         // Submit exam
         window.submitExam = function() {
+            // Close confirmation modal
+            closeConfirmModal();
+            
             clearInterval(timerInterval);
             
             // Calculate score
@@ -1810,6 +2161,9 @@
                 completedAt: new Date().toISOString()
             }).then(() => {
                 showLoading(false);
+                
+                // Clear saved progress
+                clearExamProgress();
                 
                 // Show result
                 document.getElementById('resultScore').textContent = score;
@@ -1940,6 +2294,11 @@
             localStorage.removeItem('currentStudent');
             localStorage.removeItem('rememberMe');
             
+            // Optionally clear exam progress on logout
+            if (!confirm('هل تريد حفظ تقدمك في الاختبارات الحالية؟')) {
+                localStorage.removeItem(EXAM_PROGRESS_KEY);
+            }
+            
             currentStudent = null;
             document.getElementById('authContainer').style.display = 'flex';
             document.getElementById('mainApp').style.display = 'none';
@@ -1982,6 +2341,8 @@
         window.onclick = function(event) {
             const resultModal = document.getElementById('resultModal');
             const editProfileModal = document.getElementById('editProfileModal');
+            const confirmModal = document.getElementById('confirmModal');
+            const exitConfirmModal = document.getElementById('exitConfirmModal');
             
             if (event.target == resultModal) {
                 closeResultModal();
@@ -1989,7 +2350,20 @@
             if (event.target == editProfileModal) {
                 closeEditProfileModal();
             }
+            if (event.target == confirmModal) {
+                closeConfirmModal();
+            }
+            if (event.target == exitConfirmModal) {
+                closeExitConfirmModal();
+            }
         }
+
+        // Save progress before page unload
+        window.addEventListener('beforeunload', function() {
+            if (currentExam) {
+                saveExamProgress();
+            }
+        });
     </script>
 </body>
 </html>
