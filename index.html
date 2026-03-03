@@ -559,6 +559,24 @@
             box-shadow: 0 5px 15px rgba(255, 171, 45, 0.3);
         }
 
+        .review-exam-btn {
+            background: linear-gradient(135deg, #9c27b0, #7b1fa2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .review-exam-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(156, 39, 176, 0.3);
+        }
+
         .exam-container {
             position: fixed;
             top: 0;
@@ -673,7 +691,7 @@
             background: white;
             border-radius: 30px;
             padding: 30px;
-            max-width: 500px;
+            max-width: 800px;
             width: 90%;
             max-height: 80vh;
             overflow-y: auto;
@@ -703,6 +721,188 @@
             padding: 15px;
             margin-bottom: 10px;
             border-radius: 10px;
+        }
+
+        /* Exam Review Styles */
+        .review-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .review-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .review-info {
+            display: flex;
+            gap: 15px;
+            font-size: 0.9rem;
+        }
+
+        .review-question {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .review-question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .review-question-number {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+        }
+
+        .review-question-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #764ba2;
+            margin-bottom: 20px;
+        }
+
+        .review-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .review-option {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 15px;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .review-option.user-selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .review-option.correct-answer {
+            background: #d4edda;
+            border-color: #00d25b;
+        }
+
+        .review-option.wrong-answer {
+            background: #fff5f5;
+            border-color: #ff4757;
+        }
+
+        .review-option i {
+            margin-right: 5px;
+        }
+
+        .answer-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .answer-indicator.correct {
+            background: #d4edda;
+            color: #00d25b;
+        }
+
+        .answer-indicator.wrong {
+            background: #fff5f5;
+            color: #ff4757;
+        }
+
+        .review-navigation {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .nav-btn.prev {
+            background: linear-gradient(135deg, #ffab2d, #ff8c00);
+        }
+
+        .nav-btn.next {
+            background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+        }
+
+        .question-counter {
+            background: #f0f0f0;
+            padding: 12px 25px;
+            border-radius: 10px;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .show-answer-btn {
+            background: #00d25b;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+        }
+
+        .show-answer-btn:hover {
+            background: #00a04a;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,210,91,0.3);
         }
 
         .toast {
@@ -947,6 +1147,10 @@
             .auth-card {
                 padding: 20px;
             }
+            
+            .review-navigation {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -1184,6 +1388,21 @@
         </div>
     </div>
 
+    <!-- Exam Review Container -->
+    <div id="examReviewContainer" class="exam-container">
+        <div class="exam-header-bar">
+            <div>
+                <h2 id="reviewExamTitle"></h2>
+                <div class="exam-progress" id="reviewProgress">مراجعة الأسئلة</div>
+            </div>
+            <button onclick="closeReview()" style="background: none; border: none; color: white; font-size: 24px;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div id="reviewArea"></div>
+    </div>
+
     <!-- Confirmation Modal for Finish -->
     <div id="confirmModal" class="confirm-modal" style="display: none;">
         <div class="confirm-content">
@@ -1238,6 +1457,12 @@
             <div style="text-align: center; margin: 20px 0;">
                 <p id="resultPercentage">0%</p>
             </div>
+            
+            <!-- Review Button -->
+            <button class="review-exam-btn" onclick="showExamReview()" style="margin-bottom: 20px;">
+                <i class="fas fa-eye"></i> عرض تفاصيل الإجابات
+            </button>
+            
             <h3 style="color: #764ba2; margin: 20px 0;">الإجابات الخاطئة:</h3>
             <div id="wrongAnswersList"></div>
             <button class="auth-btn" onclick="closeResultModal()" style="margin-top: 20px;">
@@ -1316,6 +1541,11 @@
         let timerInterval = null;
         let timeLeft = 60;
         let examStartTime = null;
+        
+        // Review variables
+        let currentReviewExam = null;
+        let currentReviewIndex = 0;
+        let currentReviewAnswers = [];
 
         // LocalStorage keys
         const EXAM_PROGRESS_KEY = 'examProgress';
@@ -1949,7 +2179,7 @@
             });
         }
 
-        // Load all results
+        // Load all results with review buttons
         function loadAllResults(results) {
             const allResultsList = document.getElementById('allResultsList');
             allResultsList.innerHTML = '';
@@ -1980,9 +2210,14 @@
                             <span><i class="fas fa-check-circle" style="color: #00d25b;"></i> ${result.score}/${result.total}</span>
                             <span><i class="far fa-calendar"></i> ${new Date(result.completedAt).toLocaleDateString('ar-EG')}</span>
                         </div>
-                        <button class="action-btn btn-primary" onclick="showResultDetails('${result.id}')" style="margin-top: 10px; width: 100%; background: #667eea; color: white; border: none; padding: 10px; border-radius: 10px; cursor: pointer;">
-                            <i class="fas fa-eye"></i> عرض التفاصيل
-                        </button>
+                        <div style="display: flex; gap: 5px; margin-top: 10px;">
+                            <button class="action-btn btn-primary" onclick="showResultDetails('${result.id}')" style="flex: 1; background: #667eea; color: white; border: none; padding: 10px; border-radius: 10px; cursor: pointer;">
+                                <i class="fas fa-eye"></i> التفاصيل
+                            </button>
+                            <button class="action-btn review-exam-btn" onclick="showExamReviewFromResult('${result.id}')" style="flex: 1; background: #9c27b0; color: white; border: none; padding: 10px; border-radius: 10px; cursor: pointer;">
+                                <i class="fas fa-clipboard-list"></i> مراجعة
+                            </button>
+                        </div>
                     `;
                     allResultsList.appendChild(resultCard);
                 });
@@ -2165,6 +2400,10 @@
                 // Clear saved progress
                 clearExamProgress();
                 
+                // Save for review
+                currentReviewExam = currentExam;
+                currentReviewAnswers = answers;
+                
                 // Show result
                 document.getElementById('resultScore').textContent = score;
                 document.getElementById('resultTotal').textContent = currentExam.questions.length;
@@ -2194,6 +2433,150 @@
                 showLoading(false);
                 showToast('حدث خطأ في حفظ النتيجة', true);
             });
+        }
+
+        // Show exam review
+        window.showExamReview = function() {
+            if (!currentReviewExam) return;
+            
+            document.getElementById('resultModal').style.display = 'none';
+            document.getElementById('reviewExamTitle').textContent = currentReviewExam.title;
+            document.getElementById('examReviewContainer').classList.add('active');
+            
+            currentReviewIndex = 0;
+            displayReviewQuestion();
+        }
+
+        // Show exam review from result
+        window.showExamReviewFromResult = function(resultId) {
+            showLoading(true);
+            
+            get(ref(db, 'results/' + resultId)).then((snapshot) => {
+                const result = snapshot.val();
+                
+                get(ref(db, 'exams/' + result.examId)).then((examSnap) => {
+                    const exam = examSnap.val();
+                    
+                    currentReviewExam = exam;
+                    currentReviewAnswers = result.answers;
+                    
+                    showLoading(false);
+                    
+                    document.getElementById('reviewExamTitle').textContent = exam.title;
+                    document.getElementById('examReviewContainer').classList.add('active');
+                    
+                    currentReviewIndex = 0;
+                    displayReviewQuestion();
+                });
+            }).catch((error) => {
+                showLoading(false);
+                showToast('حدث خطأ في تحميل المراجعة', true);
+            });
+        }
+
+        // Display review question
+        function displayReviewQuestion() {
+            if (!currentReviewExam) return;
+            
+            const question = currentReviewExam.questions[currentReviewIndex];
+            const userAnswer = currentReviewAnswers[currentReviewIndex];
+            const isCorrect = userAnswer === question.correct;
+            
+            let optionsHtml = '';
+            question.options.forEach((option, index) => {
+                const optionNumber = index + 1;
+                let optionClass = 'review-option';
+                
+                if (optionNumber === userAnswer && optionNumber === question.correct) {
+                    optionClass += ' correct-answer user-selected';
+                } else if (optionNumber === userAnswer) {
+                    optionClass += ' wrong-answer';
+                } else if (optionNumber === question.correct) {
+                    optionClass += ' correct-answer';
+                }
+                
+                let indicator = '';
+                if (optionNumber === userAnswer && optionNumber === question.correct) {
+                    indicator = '<i class="fas fa-check-circle" style="color: #00d25b;"></i>';
+                } else if (optionNumber === userAnswer) {
+                    indicator = '<i class="fas fa-times-circle" style="color: #ff4757;"></i>';
+                } else if (optionNumber === question.correct) {
+                    indicator = '<i class="fas fa-check-circle" style="color: #00d25b;"></i>';
+                }
+                
+                optionsHtml += `
+                    <div class="${optionClass}">
+                        <strong>الخيار ${optionNumber}:</strong> ${option} ${indicator}
+                    </div>
+                `;
+            });
+            
+            const answerIndicator = isCorrect ? 
+                '<span class="answer-indicator correct"><i class="fas fa-check-circle"></i> إجابة صحيحة</span>' : 
+                '<span class="answer-indicator wrong"><i class="fas fa-times-circle"></i> إجابة خاطئة</span>';
+            
+            const reviewArea = document.getElementById('reviewArea');
+            reviewArea.innerHTML = `
+                <div class="review-question">
+                    <div class="review-question-header">
+                        <span class="review-question-number">سؤال ${currentReviewIndex + 1} من ${currentReviewExam.questions.length}</span>
+                        ${answerIndicator}
+                    </div>
+                    <div class="review-question-text">
+                        ${question.text}
+                    </div>
+                    <div class="review-options">
+                        ${optionsHtml}
+                    </div>
+                    <div style="background: #f0f8ff; padding: 15px; border-radius: 10px; margin-top: 15px;">
+                        <p style="color: #00d25b; font-weight: 600;">
+                            <i class="fas fa-check-circle"></i> الإجابة الصحيحة: ${question.options[question.correct - 1]}
+                        </p>
+                        ${userAnswer ? 
+                            `<p style="color: ${isCorrect ? '#00d25b' : '#ff4757'}; margin-top: 5px;">
+                                <i class="fas ${isCorrect ? 'fa-check-circle' : 'fa-times-circle'}"></i> 
+                                إجابتك: ${question.options[userAnswer - 1]}
+                            </p>` : 
+                            `<p style="color: #ff4757; margin-top: 5px;">
+                                <i class="fas fa-exclamation-circle"></i> لم تقم بالإجابة على هذا السؤال
+                            </p>`
+                        }
+                    </div>
+                </div>
+                
+                <div class="review-navigation">
+                    <button class="nav-btn prev" onclick="previousReview()" ${currentReviewIndex === 0 ? 'disabled' : ''}>
+                        <i class="fas fa-arrow-right"></i> السابق
+                    </button>
+                    <span class="question-counter">
+                        ${currentReviewIndex + 1} / ${currentReviewExam.questions.length}
+                    </span>
+                    <button class="nav-btn next" onclick="nextReview()" ${currentReviewIndex === currentReviewExam.questions.length - 1 ? 'disabled' : ''}>
+                        التالي <i class="fas fa-arrow-left"></i>
+                    </button>
+                </div>
+            `;
+        }
+
+        window.nextReview = function() {
+            if (currentReviewIndex < currentReviewExam.questions.length - 1) {
+                currentReviewIndex++;
+                displayReviewQuestion();
+            }
+        }
+
+        window.previousReview = function() {
+            if (currentReviewIndex > 0) {
+                currentReviewIndex--;
+                displayReviewQuestion();
+            }
+        }
+
+        window.closeReview = function() {
+            document.getElementById('examReviewContainer').classList.remove('active');
+            currentReviewExam = null;
+            currentReviewIndex = 0;
+            currentReviewAnswers = [];
         }
 
         // Show result details
@@ -2343,6 +2726,7 @@
             const editProfileModal = document.getElementById('editProfileModal');
             const confirmModal = document.getElementById('confirmModal');
             const exitConfirmModal = document.getElementById('exitConfirmModal');
+            const examReviewContainer = document.getElementById('examReviewContainer');
             
             if (event.target == resultModal) {
                 closeResultModal();
