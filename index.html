@@ -440,16 +440,12 @@
         function cleanInstagramLink(value) {
             if (!value) return '';
             let url = value.trim();
-            // إذا لم يبدأ بـ http:// أو https:// نضيف https://
             if (!/^https?:\/\//i.test(url)) {
                 url = 'https://' + url;
             }
-            // نتأكد أن النطاق هو instagram.com أو www.instagram.com
-            // لكننا نترك المستخدم يضع أي رابط، فقط ننظف المسافات.
             return url;
         }
 
-        // دالة لتنظيف الروابط العامة وتطبيقها على الحقول
         function setupLinkCleaner(input, isInstagram = false) {
             input.addEventListener('input', function() {
                 let val = this.value;
@@ -480,15 +476,23 @@
             return '';
         }
 
-        function floorToThousand(v) {
-            return v ? Math.floor(v / 1000) * 1000 : 0;
+        // دالة التقريب الجديدة: تقريب إلى أقرب ألف بحد أدنى 750 للصعود
+        function roundToNearestThousand(value) {
+            if (!value) return 0;
+            const remainder = value % 1000;
+            if (remainder >= 750) {
+                return value + (1000 - remainder);
+            } else {
+                return value - remainder;
+            }
         }
 
+        // حساب العربون بناءً على السعر المقرب
         function calculateDownPayment(totalIQD) {
-            const t = floorToThousand(totalIQD);
-            if (t < 100000) return 10000;
-            if (t <= 250000) return 25000;
-            if (t <= 500000) return 50000;
+            const rounded = roundToNearestThousand(totalIQD);
+            if (rounded < 100000) return 10000;
+            if (rounded <= 250000) return 25000;
+            if (rounded <= 500000) return 50000;
             return 100000;
         }
 
@@ -640,9 +644,7 @@
 
             container.innerHTML = filteredOrders.map(order => {
                 const shipStatus = getShipmentStatus(order.shipmentNumber);
-                // استخراج اسم المستخدم من الرابط للعرض المختصر (اختياري)
                 let instaDisplay = order.instagramLink || '—';
-                // نعرض الرابط بشكل مختصر إذا كان طويلاً
                 if (instaDisplay.length > 30) {
                     instaDisplay = instaDisplay.substring(0, 30) + '…';
                 }
@@ -799,7 +801,6 @@
             }
 
             const instagramLink = document.getElementById('instagramLink').value.trim();
-            // تنظيف الرابط إذا كان موجوداً
             const cleanedInstagram = instagramLink ? cleanInstagramLink(instagramLink) : '';
 
             const hasDuplicates = document.querySelector('input[name="hasDuplicates"]:checked')?.value === 'yes';
@@ -873,7 +874,6 @@
                 dupHtml += '</ul></div>';
             }
             const priceIQD = order.cartPrice || 0;
-            // عرض رابط الانستغرام كعنصر قابل للنقر
             const instaLink = order.instagramLink ? `<a href="${order.instagramLink}" target="_blank">${order.instagramLink}</a>` : '—';
             document.getElementById('detailContent').innerHTML = `
                 <div class="detail-row"><span>📦 الشحنة</span><span>${order.shipmentNumber || '—'} 
@@ -891,7 +891,7 @@
             detailModal.style.display = 'flex';
         }
 
-        // ---------- حاسبة السعر ----------
+        // ---------- حاسبة السعر (مع التقريب الجديد) ----------
         const calcPriceModal = document.getElementById('calcPriceModal');
         const calcPriceBtn = document.getElementById('calcPriceBtn');
         const closeCalcPrice = document.getElementById('closeCalcPrice');
@@ -923,15 +923,15 @@
                 return;
             }
             const iqd = Math.floor(usd * 1320);
-            const downPayment = calculateDownPayment(iqd);
-            const iqdRounded = floorToThousand(iqd);
-            const downRounded = floorToThousand(downPayment);
+            // تطبيق التقريب الجديد
+            const roundedIQD = roundToNearestThousand(iqd);
+            const downPayment = calculateDownPayment(iqd); // يستخدم نفس التقريب داخلياً
 
             priceCalcResult.classList.add('visible');
             priceCalcResult.innerHTML = `
-                <div class="iqd">💰 السعر بالدينار: ${iqdRounded.toLocaleString()} د.ع</div>
-                <div class="down">🔐 العربون المطلوب: ${downRounded.toLocaleString()} د.ع</div>
-                <div class="note">* يتم تقريب المبالغ لأقرب ألف</div>
+                <div class="iqd">💰 السعر بالدينار (مقرب): ${roundedIQD.toLocaleString()} د.ع</div>
+                <div class="down">🔐 العربون المطلوب: ${downPayment.toLocaleString()} د.ع</div>
+                <div class="note">* التقريب حسب القاعدة: إذا كانت المئات >= 750 يصعد، وإلا ينزل</div>
             `;
         });
 
@@ -942,9 +942,9 @@
             }
         });
 
-        // بدء التطبيق - إعداد تنظيف الروابط
+        // بدء التطبيق
         const instagramInput = document.getElementById('instagramLink');
-        setupLinkCleaner(instagramInput, true); // معلمة true للتعامل مع رابط الانستغرام
+        setupLinkCleaner(instagramInput, true);
 
         const cartLinkInput = document.getElementById('cartLink');
         setupLinkCleaner(cartLinkInput);
