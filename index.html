@@ -333,9 +333,10 @@
                         <option value="">اختر رقم الشحنة المرتبط</option>
                     </select>
                 </div>
+                <!-- حقل رابط الانستغرام -->
                 <div class="input-group">
-                    <span class="icon">📷</span>
-                    <input type="text" id="instagram" placeholder="حساب الانستغرام (اختياري)">
+                    <span class="icon">🌐</span>
+                    <input type="url" id="instagramLink" placeholder="رابط حساب الانستغرام (مثل: https://instagram.com/username)">
                 </div>
                 <div class="input-group">
                     <span class="icon">📞</span>
@@ -397,7 +398,7 @@
         </div>
     </div>
 
-    <!-- نافذة حاسبة السعر (تم تعديلها لضمان الكتابة) -->
+    <!-- نافذة حاسبة السعر -->
     <div id="calcPriceModal" class="modal-overlay" style="display:none;">
         <div class="modal">
             <button class="close-modal" id="closeCalcPrice">✕</button>
@@ -435,14 +436,38 @@
             return match ? match[0] : text;
         }
 
-        function setupLinkCleaner(input) {
+        // دالة لتنظيف رابط الانستغرام (تأكد من وجود https://)
+        function cleanInstagramLink(value) {
+            if (!value) return '';
+            let url = value.trim();
+            // إذا لم يبدأ بـ http:// أو https:// نضيف https://
+            if (!/^https?:\/\//i.test(url)) {
+                url = 'https://' + url;
+            }
+            // نتأكد أن النطاق هو instagram.com أو www.instagram.com
+            // لكننا نترك المستخدم يضع أي رابط، فقط ننظف المسافات.
+            return url;
+        }
+
+        // دالة لتنظيف الروابط العامة وتطبيقها على الحقول
+        function setupLinkCleaner(input, isInstagram = false) {
             input.addEventListener('input', function() {
-                const cleaned = extractUrl(this.value);
-                if (cleaned !== this.value) this.value = cleaned;
+                let val = this.value;
+                if (isInstagram) {
+                    val = cleanInstagramLink(val);
+                } else {
+                    val = extractUrl(val);
+                }
+                if (val !== this.value) this.value = val;
             });
             input.addEventListener('blur', function() {
-                const cleaned = extractUrl(this.value);
-                if (cleaned !== this.value) this.value = cleaned;
+                let val = this.value;
+                if (isInstagram) {
+                    val = cleanInstagramLink(val);
+                } else {
+                    val = extractUrl(val);
+                }
+                if (val !== this.value) this.value = val;
             });
         }
 
@@ -615,10 +640,16 @@
 
             container.innerHTML = filteredOrders.map(order => {
                 const shipStatus = getShipmentStatus(order.shipmentNumber);
+                // استخراج اسم المستخدم من الرابط للعرض المختصر (اختياري)
+                let instaDisplay = order.instagramLink || '—';
+                // نعرض الرابط بشكل مختصر إذا كان طويلاً
+                if (instaDisplay.length > 30) {
+                    instaDisplay = instaDisplay.substring(0, 30) + '…';
+                }
                 return `
                 <div class="row-item order-row-clickable" data-id="${order.id}" style="cursor:pointer;">
                     <div class="row-info">
-                        <strong>${order.instagram || 'بدون اسم'} | ${order.phone1 || '—'}</strong>
+                        <strong>${instaDisplay} | ${order.phone1 || '—'}</strong>
                         <small>🚚 شحنة: ${order.shipmentNumber || '—'} 
                         ${shipStatus ? `<span class="status-badge ${getStatusClass(shipStatus)}">${shipStatus}</span>` : ''}
                         </small>
@@ -682,6 +713,7 @@
             addDuplicateRow();
             populateShipmentSelect();
             document.getElementById('cartPrice').value = '';
+            document.getElementById('instagramLink').value = '';
         }
 
         function addDuplicateRow(link = '', qty = 1) {
@@ -726,7 +758,7 @@
             orderModalTitle.textContent = '✏️ تعديل الطلب';
             resetOrderForm();
             orderIdInput.value = orderId;
-            document.getElementById('instagram').value = order.instagram || '';
+            document.getElementById('instagramLink').value = order.instagramLink || '';
             document.getElementById('phone1').value = order.phone1 || '';
             document.getElementById('phone2').value = order.phone2 || '';
             document.getElementById('governorate').value = order.governorate || '';
@@ -766,6 +798,10 @@
                 return;
             }
 
+            const instagramLink = document.getElementById('instagramLink').value.trim();
+            // تنظيف الرابط إذا كان موجوداً
+            const cleanedInstagram = instagramLink ? cleanInstagramLink(instagramLink) : '';
+
             const hasDuplicates = document.querySelector('input[name="hasDuplicates"]:checked')?.value === 'yes';
             const duplicateProducts = [];
             if (hasDuplicates) {
@@ -779,7 +815,7 @@
 
             const orderData = {
                 shipmentNumber,
-                instagram: document.getElementById('instagram').value.trim(),
+                instagramLink: cleanedInstagram,
                 phone1: document.getElementById('phone1').value.trim(),
                 phone2: document.getElementById('phone2').value.trim(),
                 governorate: document.getElementById('governorate').value,
@@ -837,10 +873,12 @@
                 dupHtml += '</ul></div>';
             }
             const priceIQD = order.cartPrice || 0;
+            // عرض رابط الانستغرام كعنصر قابل للنقر
+            const instaLink = order.instagramLink ? `<a href="${order.instagramLink}" target="_blank">${order.instagramLink}</a>` : '—';
             document.getElementById('detailContent').innerHTML = `
                 <div class="detail-row"><span>📦 الشحنة</span><span>${order.shipmentNumber || '—'} 
                     <span class="status-badge ${getStatusClass(shipStatus)}">${shipStatus}</span></span></div>
-                <div class="detail-row"><span>📷 الانستغرام</span><span>${order.instagram || '—'}</span></div>
+                <div class="detail-row"><span>🌐 رابط الانستغرام</span><span>${instaLink}</span></div>
                 <div class="detail-row"><span>📞 الهاتف 1</span><span>${order.phone1 || '—'}</span></div>
                 <div class="detail-row"><span>📱 الهاتف 2</span><span>${order.phone2 || '—'}</span></div>
                 <div class="detail-row"><span>📍 المحافظة</span><span>${order.governorate || '—'}</span></div>
@@ -853,7 +891,7 @@
             detailModal.style.display = 'flex';
         }
 
-        // ---------- حاسبة السعر (مع التركيز التلقائي) ----------
+        // ---------- حاسبة السعر ----------
         const calcPriceModal = document.getElementById('calcPriceModal');
         const calcPriceBtn = document.getElementById('calcPriceBtn');
         const closeCalcPrice = document.getElementById('closeCalcPrice');
@@ -866,10 +904,7 @@
             priceUSDInput.value = '';
             priceCalcResult.classList.remove('visible');
             priceCalcResult.innerHTML = '';
-            // تأكيد التركيز على الحقل بعد فتح النافذة
-            setTimeout(() => {
-                priceUSDInput.focus();
-            }, 300);
+            setTimeout(() => priceUSDInput.focus(), 300);
         });
 
         closeCalcPrice.addEventListener('click', () => {
@@ -907,8 +942,13 @@
             }
         });
 
-        // بدء التطبيق
-        setupLinkCleaner(document.getElementById('cartLink'));
+        // بدء التطبيق - إعداد تنظيف الروابط
+        const instagramInput = document.getElementById('instagramLink');
+        setupLinkCleaner(instagramInput, true); // معلمة true للتعامل مع رابط الانستغرام
+
+        const cartLinkInput = document.getElementById('cartLink');
+        setupLinkCleaner(cartLinkInput);
+
         addDuplicateRow();
         loadShipments();
         loadOrders();
