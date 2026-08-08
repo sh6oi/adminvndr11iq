@@ -364,6 +364,11 @@
                     <span class="icon">🔗</span>
                     <input type="text" id="cartLink" placeholder="رابط السلة">
                 </div>
+                <!-- حقل سعر السلة بالدينار (إجباري) -->
+                <div class="input-group">
+                    <span class="icon">💰</span>
+                    <input type="number" id="cartPrice" placeholder="سعر السلة بالدينار (د.ع)" step="1" min="0" required>
+                </div>
 
                 <div style="margin:12px 0; font-weight:700;">هل يحتوي الطلب على منتجات مكررة؟</div>
                 <div class="radio-group" id="dupRadioGroup">
@@ -392,14 +397,14 @@
         </div>
     </div>
 
-    <!-- نافذة حاسبة السعر -->
+    <!-- نافذة حاسبة السعر (تم تعديلها لضمان الكتابة) -->
     <div id="calcPriceModal" class="modal-overlay" style="display:none;">
         <div class="modal">
             <button class="close-modal" id="closeCalcPrice">✕</button>
             <h3>🧮 حساب السعر</h3>
             <div class="input-group" style="margin-bottom:12px;">
                 <span class="icon">💵</span>
-                <input type="number" id="priceUSD" placeholder="السعر بالدولار ($)" step="0.01" min="0">
+                <input type="number" id="priceUSD" placeholder="السعر بالدولار ($)" step="0.01" min="0" autofocus>
             </div>
             <div id="priceCalcResult"></div>
             <button class="btn btn-gold" id="calcPriceBtnModal" style="width:100%;">احسب</button>
@@ -676,6 +681,7 @@
             dupFields.innerHTML = '';
             addDuplicateRow();
             populateShipmentSelect();
+            document.getElementById('cartPrice').value = '';
         }
 
         function addDuplicateRow(link = '', qty = 1) {
@@ -726,6 +732,7 @@
             document.getElementById('governorate').value = order.governorate || '';
             document.getElementById('address').value = order.address || '';
             document.getElementById('cartLink').value = order.cartLink || '';
+            document.getElementById('cartPrice').value = order.cartPrice || '';
             const shipmentSelect = document.getElementById('orderShipmentSelect');
             if (order.shipmentNumber) {
                 shipmentSelect.value = order.shipmentNumber;
@@ -752,6 +759,13 @@
             const shipmentNumber = document.getElementById('orderShipmentSelect').value;
             if (!shipmentNumber) { showToast('يجب اختيار رقم الشحنة', 'error'); return; }
 
+            const cartPrice = parseFloat(document.getElementById('cartPrice').value);
+            if (isNaN(cartPrice) || cartPrice <= 0) {
+                showToast('⚠️ يجب إدخال سعر السلة بالدينار (أكبر من صفر)', 'error');
+                document.getElementById('cartPrice').focus();
+                return;
+            }
+
             const hasDuplicates = document.querySelector('input[name="hasDuplicates"]:checked')?.value === 'yes';
             const duplicateProducts = [];
             if (hasDuplicates) {
@@ -771,6 +785,7 @@
                 governorate: document.getElementById('governorate').value,
                 address: document.getElementById('address').value.trim(),
                 cartLink: extractUrl(document.getElementById('cartLink').value.trim()),
+                cartPrice: cartPrice,
                 hasDuplicates,
                 duplicateProducts,
                 updatedAt: new Date().toISOString()
@@ -821,6 +836,7 @@
                 });
                 dupHtml += '</ul></div>';
             }
+            const priceIQD = order.cartPrice || 0;
             document.getElementById('detailContent').innerHTML = `
                 <div class="detail-row"><span>📦 الشحنة</span><span>${order.shipmentNumber || '—'} 
                     <span class="status-badge ${getStatusClass(shipStatus)}">${shipStatus}</span></span></div>
@@ -830,13 +846,14 @@
                 <div class="detail-row"><span>📍 المحافظة</span><span>${order.governorate || '—'}</span></div>
                 <div class="detail-row"><span>🏠 العنوان</span><span>${order.address || '—'}</span></div>
                 <div class="detail-row"><span>🔗 رابط السلة</span><span><a href="${order.cartLink}" target="_blank">${order.cartLink || '—'}</a></span></div>
+                <div class="detail-row"><span>💰 سعر السلة</span><span>${priceIQD.toLocaleString()} د.ع</span></div>
                 ${dupHtml}
                 <div class="detail-row"><span>📅 تاريخ الإضافة</span><span>${order.createdAt ? new Date(order.createdAt).toLocaleString('ar-IQ') : '—'}</span></div>
             `;
             detailModal.style.display = 'flex';
         }
 
-        // ---------- حاسبة السعر ----------
+        // ---------- حاسبة السعر (مع التركيز التلقائي) ----------
         const calcPriceModal = document.getElementById('calcPriceModal');
         const calcPriceBtn = document.getElementById('calcPriceBtn');
         const closeCalcPrice = document.getElementById('closeCalcPrice');
@@ -849,7 +866,10 @@
             priceUSDInput.value = '';
             priceCalcResult.classList.remove('visible');
             priceCalcResult.innerHTML = '';
-            setTimeout(() => priceUSDInput.focus(), 350);
+            // تأكيد التركيز على الحقل بعد فتح النافذة
+            setTimeout(() => {
+                priceUSDInput.focus();
+            }, 300);
         });
 
         closeCalcPrice.addEventListener('click', () => {
@@ -889,7 +909,7 @@
 
         // بدء التطبيق
         setupLinkCleaner(document.getElementById('cartLink'));
-        addDuplicateRow(); // صف افتراضي أولي
+        addDuplicateRow();
         loadShipments();
         loadOrders();
     </script>
